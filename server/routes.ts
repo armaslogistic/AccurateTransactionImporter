@@ -63,28 +63,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/warehouses/sync", async (req, res) => {
     try {
       const result = await accurateApi.listWarehouses();
+      console.log("Warehouse API Response:", JSON.stringify(result, null, 2));
       
-      if (result.s && Array.isArray(result.r)) {
+      if (result.s) {
+        // Handle successful response
+        const warehouses = result.r || [];
         const syncedWarehouses = [];
         
-        for (const warehouseData of result.r) {
-          const existing = await storage.getWarehouseByAccurateId(warehouseData.id);
-          
-          if (!existing) {
-            const warehouse = await storage.createWarehouse({
-              accurateId: warehouseData.id,
-              name: warehouseData.name,
-              description: warehouseData.description || null,
-            });
-            syncedWarehouses.push(warehouse);
+        if (Array.isArray(warehouses)) {
+          for (const warehouseData of warehouses) {
+            const existing = await storage.getWarehouseByAccurateId(warehouseData.id);
+            
+            if (!existing) {
+              const warehouse = await storage.createWarehouse({
+                accurateId: warehouseData.id,
+                name: warehouseData.name,
+                description: warehouseData.description || null,
+              });
+              syncedWarehouses.push(warehouse);
+            }
           }
         }
         
         res.json({ synced: syncedWarehouses.length, warehouses: syncedWarehouses });
       } else {
-        res.status(400).json({ error: "Failed to sync warehouses from Accurate API" });
+        console.log("API returned error:", result.e || "Unknown error");
+        res.status(400).json({ error: result.e || "Failed to sync warehouses from Accurate API" });
       }
     } catch (error) {
+      console.error("Warehouse sync error:", error);
       res.status(500).json({ error: "Failed to sync warehouses" });
     }
   });
