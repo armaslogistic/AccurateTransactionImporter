@@ -1,0 +1,814 @@
+{
+	"info": {
+		"_postman_id": "accurate-online-api-collection",
+		"name": "Accurate Online Public API",
+		"description": "Collection untuk Accurate Online Public API v1.4467.1872\nBase URL: {{base_url}}\nAuthentication: Bearer Token",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string",
+			{
+			"key": "username",
+			"value": "your_username_here",
+			"type": "string",
+			"description": "Username Accurate Online (jika menggunakan grant_type password)"
+		},
+		{
+			"key": "password",
+			"value": "your_password_here",
+			"type": "string",
+			"description": "Password Accurate Online (jika menggunakan grant_type password)"
+		}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://account.accurate.id",
+			"type": "string",
+			"description": "Base URL for Accurate Online API. Alternative URLs to try: https://api.accurate.id, https://accurate.id/api, https://app.accurate.id/api"
+		},
+		{
+			"key": "access_token",
+			"value": "your_access_token_here",
+			"type": "string"
+		},
+		{
+			"key": "session_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Get Access Token (Form Data)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/oauth/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Access Token (Basic Auth)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{client_id}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{client_secret}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/oauth/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Access Token (JSON Body)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"grant_type\": \"client_credentials\",\n    \"client_id\": \"{{client_id}}\",\n    \"client_secret\": \"{{client_secret}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/oauth/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Access Token (Username Password)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/oauth/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					}
+				},
+				{
+					"name": "Open Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"databaseId\": \"{{database_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/open-session.do",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"open-session.do"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Customer Management",
+			"item": [
+				{
+					"name": "Get All Customers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/customer/list.do?sp.pageSize=25&sp.page=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"customer",
+								"list.do"
+							],
+							"query": [
+								{
+									"key": "sp.pageSize",
+									"value": "25"
+								},
+								{
+									"key": "sp.page",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Customer by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/customer/detail.do?id={{customer_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"customer",
+								"detail.do"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{customer_id}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Customer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Customer Name\",\n    \"email\": \"customer@example.com\",\n    \"phone\": \"081234567890\",\n    \"address\": \"Customer Address\",\n    \"customerGroupField\": \"CUSTOMER\",\n    \"taxNo\": \"123456789\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/customer/save.do",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"customer",
+								"save.do"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Item Management",
+			"item": [
+				{
+					"name": "Get All Items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/item/list.do?sp.pageSize=25&sp.page=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"item",
+								"list.do"
+							],
+							"query": [
+								{
+									"key": "sp.pageSize",
+									"value": "25"
+								},
+								{
+									"key": "sp.page",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Item by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/item/detail.do?id={{item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"item",
+								"detail.do"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{item_id}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"no\": \"ITEM001\",\n    \"name\": \"Product Name\",\n    \"unitPrice\": 10000,\n    \"itemCategoryField\": \"PRODUCT\",\n    \"unitField\": \"PCS\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/item/save.do",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"item",
+								"save.do"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Sales Invoice",
+			"item": [
+				{
+					"name": "Get All Sales Invoices",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sales-invoice/list.do?sp.pageSize=25&sp.page=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sales-invoice",
+								"list.do"
+							],
+							"query": [
+								{
+									"key": "sp.pageSize",
+									"value": "25"
+								},
+								{
+									"key": "sp.page",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Sales Invoice by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sales-invoice/detail.do?id={{invoice_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sales-invoice",
+								"detail.do"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{invoice_id}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Sales Invoice",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"transDate\": \"17/06/2025\",\n    \"customer\": {\n        \"id\": {{customer_id}}\n    },\n    \"detailItem\": [\n        {\n            \"item\": {\n                \"id\": {{item_id}}\n            },\n            \"quantity\": 1,\n            \"unitPrice\": 10000\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sales-invoice/save.do",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sales-invoice",
+								"save.do"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Purchase Invoice",
+			"item": [
+				{
+					"name": "Get All Purchase Invoices",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/purchase-invoice/list.do?sp.pageSize=25&sp.page=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"purchase-invoice",
+								"list.do"
+							],
+							"query": [
+								{
+									"key": "sp.pageSize",
+									"value": "25"
+								},
+								{
+									"key": "sp.page",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Purchase Invoice",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"transDate\": \"17/06/2025\",\n    \"vendor\": {\n        \"id\": {{vendor_id}}\n    },\n    \"detailItem\": [\n        {\n            \"item\": {\n                \"id\": {{item_id}}\n            },\n            \"quantity\": 1,\n            \"unitPrice\": 10000\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/purchase-invoice/save.do",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"purchase-invoice",
+								"save.do"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Chart of Accounts",
+			"item": [
+				{
+					"name": "Get All Accounts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/account/list.do",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"list.do"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Balance Sheet",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/balance-sheet.do?startDate=01/01/2025&endDate=31/12/2025",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"balance-sheet.do"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "01/01/2025"
+								},
+								{
+									"key": "endDate",
+									"value": "31/12/2025"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Profit Loss Report",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/profit-loss.do?startDate=01/01/2025&endDate=31/12/2025",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"profit-loss.do"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "01/01/2025"
+								},
+								{
+									"key": "endDate",
+									"value": "31/12/2025"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Session Management",
+			"item": [
+				{
+					"name": "Close Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "X-Session-ID",
+								"value": "{{session_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/close-session.do",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"close-session.do"
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}
