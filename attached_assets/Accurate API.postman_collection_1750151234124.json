@@ -1,0 +1,341 @@
+{
+	"info": {
+		"_postman_id": "200c6cd1-33d4-44c6-9f9b-99c984ce8cb0",
+		"name": "Accurate API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10272601"
+	},
+	"item": [
+		{
+			"name": "Warehouse",
+			"item": [
+				{
+					"name": "Save Warehouse",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const crypto = require('crypto-js');",
+									"",
+									"// Ambil secret dari environment",
+									"const signatureSecret = pm.environment.get(\"SIGNATURE_SECRET\");",
+									"",
+									"// 🔢 Fungsi pad angka",
+									"function pad(num) { return num.toString().padStart(2, '0'); }",
+									"",
+									"// 🕒 Timestamp untuk header",
+									"const now = new Date();",
+									"const timestamp = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;",
+									"const signature = crypto.HmacSHA256(timestamp, signatureSecret);",
+									"const signatureBase64 = crypto.enc.Base64.stringify(signature);",
+									"",
+									"// 🔐 Set header auth",
+									"pm.environment.set(\"API_TIMESTAMP\", timestamp);",
+									"pm.environment.set(\"API_SIGNATURE\", signatureBase64);",
+									"",
+									"// 🔁 Buat nama & deskripsi warehouse random",
+									"const randomNumber = Math.floor(Math.random() * 10000);",
+									"const warehouseName = `GD.Auto-${randomNumber}`;",
+									"const warehouseDesc = `Gudang Karawang ${randomNumber}`;",
+									"",
+									"// 🧩 Simpan ke environment",
+									"pm.environment.set(\"WAREHOUSE_NAME\", warehouseName);",
+									"pm.environment.set(\"WAREHOUSE_DESCRIPTION\", warehouseDesc);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"try {",
+									"    const res = pm.response.json();",
+									"    console.log(\"Response JSON:\", res);",
+									"",
+									"    if (res && res.r && res.r.id) {",
+									"        pm.environment.set(\"WAREHOUSE_ID\", res.r.id);",
+									"        console.log(\"✅ Warehouse ID disimpan:\", res.r.id);",
+									"    } else {",
+									"        console.warn(\"⚠️ Field 'r.id' tidak ditemukan\");",
+									"    }",
+									"} catch (err) {",
+									"    console.error(\"❌ Gagal parsing JSON:\", err);",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{API_TOKEN}}"
+							},
+							{
+								"key": "X-Api-Timestamp",
+								"value": "{{API_TIMESTAMP}}"
+							},
+							{
+								"key": "X-Api-Signature",
+								"value": "{{API_SIGNATURE}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_HOST}}/accurate/api/warehouse/save.do?name={{WAREHOUSE_NAME}}&description={{WAREHOUSE_DESCRIPTION}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"accurate",
+								"api",
+								"warehouse",
+								"save.do"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{WAREHOUSE_NAME}}"
+								},
+								{
+									"key": "description",
+									"value": "{{WAREHOUSE_DESCRIPTION}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View All Warehouses",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"const crypto = require('crypto-js');",
+									"const signatureSecret = pm.environment.get(\"SIGNATURE_SECRET\");",
+									"",
+									"function pad(num) { return num.toString().padStart(2, '0'); }",
+									"const now = new Date();",
+									"const timestamp = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;",
+									"const signature = crypto.HmacSHA256(timestamp, signatureSecret);",
+									"const signatureBase64 = crypto.enc.Base64.stringify(signature);",
+									"",
+									"pm.environment.set(\"API_TIMESTAMP\", timestamp);",
+									"pm.environment.set(\"API_SIGNATURE\", signatureBase64);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{API_TOKEN}}"
+							},
+							{
+								"key": "X-Api-Timestamp",
+								"value": "{{API_TIMESTAMP}}"
+							},
+							{
+								"key": "X-Api-Signature",
+								"value": "{{API_SIGNATURE}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_HOST}}/accurate/api/warehouse/list.do?id={{WAREHOUSE_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"accurate",
+								"api",
+								"warehouse",
+								"list.do"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{WAREHOUSE_ID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Warehouse by ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"",
+									"const crypto = require('crypto-js');",
+									"const signatureSecret = pm.environment.get(\"SIGNATURE_SECRET\");",
+									"",
+									"function pad(num) { return num.toString().padStart(2, '0'); }",
+									"const now = new Date();",
+									"const timestamp = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;",
+									"const signature = crypto.HmacSHA256(timestamp, signatureSecret);",
+									"const signatureBase64 = crypto.enc.Base64.stringify(signature);",
+									"",
+									"pm.environment.set(\"API_TIMESTAMP\", timestamp);",
+									"pm.environment.set(\"API_SIGNATURE\", signatureBase64);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{API_TOKEN}}"
+							},
+							{
+								"key": "X-Api-Timestamp",
+								"value": "{{API_TIMESTAMP}}"
+							},
+							{
+								"key": "X-Api-Signature",
+								"value": "{{API_SIGNATURE}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_HOST}}/accurate/api/warehouse/delete.do?id={{WAREHOUSE_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"accurate",
+								"api",
+								"warehouse",
+								"delete.do"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{WAREHOUSE_ID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sales Invoice",
+			"item": [
+				{
+					"name": "Sales Invoice List",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const crypto = require('crypto-js');",
+									"",
+									"// Ambil secret dari environment",
+									"const signatureSecret = pm.environment.get(\"SIGNATURE_SECRET\");",
+									"",
+									"// 🔢 Fungsi pad angka",
+									"function pad(num) { return num.toString().padStart(2, '0'); }",
+									"",
+									"// 🕒 Timestamp untuk header",
+									"const now = new Date();",
+									"const timestamp = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;",
+									"const signature = crypto.HmacSHA256(timestamp, signatureSecret);",
+									"const signatureBase64 = crypto.enc.Base64.stringify(signature);",
+									"",
+									"// 🔐 Set header auth",
+									"pm.environment.set(\"API_TIMESTAMP\", timestamp);",
+									"pm.environment.set(\"API_SIGNATURE\", signatureBase64);",
+									"",
+									"// 🔁 Buat nama & deskripsi warehouse random",
+									"const randomNumber = Math.floor(Math.random() * 10000);",
+									"const warehouseName = `GD.Auto-${randomNumber}`;",
+									"const warehouseDesc = `Gudang Karawang ${randomNumber}`;",
+									"",
+									"// 🧩 Simpan ke environment",
+									"pm.environment.set(\"WAREHOUSE_NAME\", warehouseName);",
+									"pm.environment.set(\"WAREHOUSE_DESCRIPTION\", warehouseDesc);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"try {",
+									"    const res = pm.response.json();",
+									"    console.log(\"Response JSON:\", res);",
+									"",
+									"    if (res && res.r && res.r.id) {",
+									"        pm.environment.set(\"WAREHOUSE_ID\", res.r.id);",
+									"        console.log(\"✅ Warehouse ID disimpan:\", res.r.id);",
+									"    } else {",
+									"        console.warn(\"⚠️ Field 'r.id' tidak ditemukan\");",
+									"    }",
+									"} catch (err) {",
+									"    console.error(\"❌ Gagal parsing JSON:\", err);",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{API_TOKEN}}"
+							},
+							{
+								"key": "X-Api-Timestamp",
+								"value": "{{API_TIMESTAMP}}"
+							},
+							{
+								"key": "X-Api-Signature",
+								"value": "{{API_SIGNATURE}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_HOST}}/accurate/api/sales-invoice/list.do",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"accurate",
+								"api",
+								"sales-invoice",
+								"list.do"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
