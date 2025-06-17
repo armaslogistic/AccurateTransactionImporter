@@ -24,10 +24,14 @@ export class AccurateApiService {
   }
 
   private generateSignature(): { timestamp: string; signature: string } {
+    // Generate current Jakarta time (UTC+7)
     const now = new Date();
+    // Convert to Jakarta timezone by adding 7 hours
+    const jakartaOffset = 7 * 60; // Jakarta is UTC+7
+    const jakartaTime = new Date(now.getTime() + (jakartaOffset + now.getTimezoneOffset()) * 60 * 1000);
     const pad = (num: number) => num.toString().padStart(2, '0');
     
-    const timestamp = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    const timestamp = `${pad(jakartaTime.getDate())}/${pad(jakartaTime.getMonth() + 1)}/${jakartaTime.getFullYear()} ${pad(jakartaTime.getHours())}:${pad(jakartaTime.getMinutes())}:${pad(jakartaTime.getSeconds())}`;
     
     const signature = crypto
       .createHmac('sha256', this.config.signatureSecret)
